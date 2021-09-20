@@ -1,0 +1,29 @@
+@import "../../styles/fonts.scss";
+@import "../../styles/colors.scss";
+
+.rides-tab-container {
+  padding: 100px 50px;
+  background-color: rgb(245, 246, 246);
+  h2 {
+    display: flex;
+    align-items: center;
+    vertical-align: middle;
+    font-family: $Montserrat;
+    font-weight: $weightEBold;
+    font-size: $large;
+
+    & > span {
+      margin-left: 30px;
+      background-color: $orange;
+      font-size: $extra_small;
+      align-self: center;
+    }
+  }
+
+  .ride-cards-container {
+    .card-item {
+      flex-basis: 30%;
+      flex-grow: 0;
+    }
+  }
+}

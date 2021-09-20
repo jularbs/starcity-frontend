@@ -1,0 +1,44 @@
+.ticket-portal-container {
+  h2 {
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  .tickets-container {
+    .ticket-item {
+      padding: 20px 20px;
+      display: grid;
+      grid-template-columns: 2fr 2fr 1fr 1fr;
+
+      .content {
+          padding: 0 20px;
+        align-self: center;
+      }
+      .name {
+        font-weight: 900;
+        font-size: 1.25rem;
+      }
+      .desc {
+          color: gray;
+        font-weight: 300;
+        font-size: .8rem;
+      }
+
+      .price {
+        //   display: flex;
+          justify-content: center;
+        font-weight: 600;
+      }
+
+      .qty {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        div {
+          padding: 0px 30px;
+        }
+      }
+    }
+  }
+}

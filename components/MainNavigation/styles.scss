@@ -1,0 +1,41 @@
+@import "../../styles/fonts.scss";
+@import "../../styles/colors.scss";
+
+.main-navigation-container {
+  color: white;
+  position: relative;
+  .react-player {
+    position: relative;
+    top: 0;
+    left: 0;
+    padding: 0;
+    height: auto;
+    width: 100%;
+  }
+  .main-navbar {
+    font-family: $SigmarOne;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.125);
+    top: 0;
+    .logo-placement {
+      position: relative;
+      .logo-container {
+        position: absolute;
+        height: calc(100% + 30px);
+        left: 50px;
+        top: 25px;
+      }
+    }
+    .links-placement {
+      position: relative;
+      .cta {
+        font-size: $extra_large;
+        background-color: $orange;
+      }
+      .link-item {
+        padding: 20px 30px;
+        cursor: pointer;
+      }
+    }
+  }
+}

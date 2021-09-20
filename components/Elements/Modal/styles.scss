@@ -1,0 +1,33 @@
+.custom-modal-container {
+  z-index: 2000;
+  width: 100vw;
+  height: 100vh;
+  display: none;
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.7);
+
+  &.active {
+    display: flex;
+  }
+}
+
+.modal-view {
+  z-index: 2001;
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 1200px;
+  max-width: 100%;
+  background-color: white;
+  color: black;
+  padding: 15px;
+  border-radius: .225rem;
+
+  .control {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    cursor: pointer;
+  }
+}

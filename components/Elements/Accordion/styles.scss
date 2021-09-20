@@ -1,0 +1,58 @@
+@import "../../../styles/fonts.scss";
+
+.accordion-container {
+  .title {
+    font-size: $normal;
+    font-family: $Montserrat;
+    font-weight: 600;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 15px 0;
+  }
+
+  .control {
+    padding: 5px 10px;
+    font-size: $extra_small;
+    color: rgba(0, 0, 0, 0.7);
+    cursor: pointer;
+    flex-direction: row-reverse;
+
+    &::before {
+      content: ">";
+      margin-left: 5px;
+    }
+  }
+
+  .ride-details {
+    // background-color: rgba(0, 0, 0, 0.2);
+    color: white;
+
+    &.active {
+      .spacer {
+        height: 200px;
+        transition: height 0.3s ease;
+      }
+
+      .details {
+        background-color: rgba(0, 0, 0, 0.25);
+      }
+    }
+    .spacer {
+      height: 0;
+      transition: height 0.3s ease;
+    }
+    .details {
+      padding: 10px 15px;
+      background-color: rgba(0, 0, 0, 0.66);
+      .name {
+      text-shadow: rgba(0, 0, 0, 0.7);
+        font-weight: $weightBold;
+      }
+
+      .h-reqs {
+        font-weight: $weightLight;
+        font-size: $extra_small;
+      }
+    }
+  }
+}
