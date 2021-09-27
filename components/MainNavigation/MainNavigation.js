@@ -12,7 +12,7 @@ const MainNavigation = () => {
         active={ticketPortalActive}
         setActive={setTicketPortalActive}
       />
-      <div className="react-player">
+      {/* <div className="react-player">
         <ReactPlayer
           url="/splash_tvc.webm"
           width="100%"
@@ -22,7 +22,7 @@ const MainNavigation = () => {
           height="auto"
           muted
         />
-      </div>
+      </div> */}
       <div className="main-navbar w-100 d-flex justify-content-between">
         <div className="logo-placement">
           <img src="/spc_logo.png" className="logo-container" alt="" />

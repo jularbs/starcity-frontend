@@ -14,7 +14,7 @@
   }
   .main-navbar {
     font-family: $SigmarOne;
-    position: absolute;
+    // position: absolute;
     background-color: rgba(0, 0, 0, 0.125);
     top: 0;
     .logo-placement {
@@ -23,7 +23,7 @@
         position: absolute;
         height: calc(100% + 30px);
         left: 50px;
-        top: 25px;
+        // top: 25px;
       }
     }
     .links-placement {

@@ -104,11 +104,18 @@ const AccessPassCard = ({ data, index, classNames }) => {
 
   const canvas = useRef(null);
 
+  const downloadQRcode = () => {
+    let qrCode = new window.QRCodeStyling(qrOptions);
+    qrCode.download({
+      name: `${index}-${data.ticketId.name}`,
+      extension: "jpg",
+    });
+  };
   useEffect(() => {
     let qrCode = new window.QRCodeStyling(qrOptions);
     qrCode.append(canvas.current);
     // qrCode.download({ name: "qr", extension: "svg" });
-  });
+  }, []);
 
   return (
     <div className={`access-pass-card ${classNames}`}>
@@ -120,13 +127,13 @@ const AccessPassCard = ({ data, index, classNames }) => {
       <div ref={canvas} className="d-flex justify-content-center mb-4"></div>
 
       <div className="send-buttons">
-        <button className="btn btn-block mb-2 btn-dl">Download</button>
+        <button className="btn btn-block mb-2 btn-dl" onClick={downloadQRcode}>
+          Download
+        </button>
 
         <button className="btn btn-block mb-2 btn-viber">Send via Viber</button>
         <button className="btn btn-block btn-fbm">Send via FB Messenger</button>
       </div>
-
-      
     </div>
   );
 };
