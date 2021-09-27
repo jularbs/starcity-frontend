@@ -61,3 +61,44 @@ body {
 .box-shadow__1 {
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
+
+//fonts
+.ff-so {
+  font-family: $SigmarOne;
+}
+
+.ff-g {
+  font-family: $Gluten;
+}
+
+.ff-m {
+  font-family: $Montserrat;
+}
+
+//CUSTOM BUTTONS
+
+//ACCESS PASS PAGE
+
+.access-pass-page {
+  // background-color: rgba(0, 0, 0, 0.07);
+  background-color: $orange;
+  color: black;
+  min-height: 100vh;
+
+  .name-header {
+    font-weight: 900;
+    font-size: 20px;
+    text-transform: uppercase;
+    margin-left: 15px;
+  }
+
+  .label {
+    font-size: 1.25rem;
+  }
+}
+.access-pass-container {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: scroll;
+  margin-bottom: 20px;
+}

@@ -3,6 +3,12 @@ const withSass = require("@zeit/next-sass");
 
 module.exports = withCss(
   withSass({
+    env: {
+      PAYMAYA_SK: process.env.PAYMAYA_SECRET_KEY,
+      PAYMAYA_PK: process.env.PAYMAYA_PUBLIC_KEY,
+      SPC_API: process.env.SPC_API,
+      DOMAIN: process.env.DOMAIN,
+    },
     webpack5: false,
     headers: () => {
       return [

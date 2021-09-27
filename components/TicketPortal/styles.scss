@@ -1,7 +1,49 @@
 .ticket-portal-container {
   h2 {
+    text-align: center;
+    margin-bottom: 10px;
+    margin-top: 20px;
     text-transform: uppercase;
     font-weight: 600;
+  }
+
+  .ticker-container {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+
+    .ticker-item {
+      text-align: center;
+      padding: 5px 15px;
+      //   background-color: orange;
+      .label {
+        font-weight: 600;
+        line-height: 14px;
+        font-size: 14px;
+      }
+
+      .description {
+        font-weight: 300;
+        font-size: 12px;
+        color: rgba(0, 0, 0, 0.5);
+      }
+    }
+  }
+
+  .buttons-container {
+    display: grid;
+    grid-template-columns: 2fr 2fr 2fr;
+    margin-top: 20px;
+
+    .hide-stepper {
+      display: none;
+    }
+    .btn {
+      font-weight: 700;
+    }
+    .next {
+      grid-column-start: 3;
+    }
   }
 
   .tickets-container {
@@ -11,22 +53,25 @@
       grid-template-columns: 2fr 2fr 1fr 1fr;
 
       .content {
-          padding: 0 20px;
+        padding: 0 20px;
         align-self: center;
+
+        .icon {
+          cursor: pointer;
+        }
       }
       .name {
         font-weight: 900;
         font-size: 1.25rem;
       }
       .desc {
-          color: gray;
+        color: gray;
         font-weight: 300;
-        font-size: .8rem;
+        font-size: 0.8rem;
       }
 
       .price {
-        //   display: flex;
-          justify-content: center;
+        justify-content: center;
         font-weight: 600;
       }
 
@@ -34,10 +79,37 @@
         display: flex;
         align-items: center;
         justify-content: center;
-
+        cursor: pointer;
         div {
           padding: 0px 30px;
         }
+      }
+
+      .total-label {
+        padding: 0 20px;
+        font-weight: 600;
+        grid-column-start: 3;
+      }
+
+      .total-content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
+
+  .p-details-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    
+    .form-container {
+      grid-column-start: 2;
+      padding: 0 20px;
+      margin-bottom: 30px;
+
+      .form-group {
+        margin-bottom: 15px;
       }
     }
   }
