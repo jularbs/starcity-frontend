@@ -125,6 +125,8 @@ const AccessPassCard = ({ data, index, classNames }) => {
         <button className="btn btn-block mb-2 btn-viber">Send via Viber</button>
         <button className="btn btn-block btn-fbm">Send via FB Messenger</button>
       </div>
+
+      
     </div>
   );
 };
