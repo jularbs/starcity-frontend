@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style type="text/css">
+      body {
+        padding: 30px 50px;
+        max-width: 100%;
+        font-family: "Montserrat", sans-serif;
+      }
+
+      h1 {
+        font-size: 18px;
+        text-align: center;
+        margin: 0 0 20px 0;
+      }
+      .template {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .header {
+        display: flex;
+        flex-grow: 1;
+        justify-content: space-between;
+        font-size: 12px;
+        align-items: center;
+      }
+
+      .company-details {
+        font-size: 12px;
+      }
+      .company-name {
+        font-weight: bold;
+        font-size: 1rem;
+      }
+
+      .sub-header {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 30px;
+      }
+
+      .payment-details {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 50px;
+      }
+
+      .payment-option {
+        font-size: 12px;
+      }
+
+      .tt-header {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr;
+        text-align: center;
+        color: white;
+        padding: 5px;
+        background-color: black;
+      }
+
+      .tt-row {
+        padding: 10px 5px;
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr;
+        text-align: center;
+      }
+
+      .tt-computation {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr;
+        grid-column-start: 2;
+        text-align: center;
+      }
+
+      .additional-info {
+        font-style: italic;
+        font-size: 12px;
+        margin-top: 50px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="template">
+      <div class="header">
+        <h2>ACKNOWLEDGEMENT RECEIPT</h2>
+        <div class="logo">
+          <img src="./public/spc_logo.png" width="150px" alt="" />
+        </div>
+      </div>
+
+      <div class="sub-header">
+        <div class="company-details">
+          <div class="company-name">STAR PARKS CORPORATION</div>
+          <div class="address">
+            <div class="line">MBC Building, V. Sotto Street, CCP Complex,</div>
+            <div class="line">Roxas Boulevard, Pasay City</div>
+          </div>
+          <div class="tin">004-729-983-000</div>
+          <div class="telno">847328453</div>
+          <div class="email">helpdesk@starcity.com.ph</div>
+        </div>
+        <div class="ar-details">
+          <div class="ar-no" style="font-weight: bold">AR No. 123NJ2K3NF3</div>
+          <div class="ar-date" style="text-align: right">2021-09-29</div>
+        </div>
+      </div>
+
+      <div class="payment-details">
+        <div class="customer-details">
+          <div class="customer-name" style="font-weight: bold">
+            Ralph Jularbal
+          </div>
+          <div class="contact-number">09178657533</div>
+          <div class="email-address">ralphjularbal@yahoo.com</div>
+        </div>
+        <div class="payment-option">
+          <div>Payment Channel: Paymaya</div>
+          <div>Reference Number: 12312k312k3jb123</div>
+          <div>Amount Paid: Php 1200.00</div>
+        </div>
+      </div>
+
+      <div class="particulars">
+        <h2 style="text-align: center">TICKETS PURCHASED</h2>
+        <div class="tickets-table">
+          <div class="tt-header">
+            <div>DESCRIPTION</div>
+            <div>QUANTITY</div>
+            <div>PRICE</div>
+            <div>AMOUNT</div>
+          </div>
+          <div class="tt-row">
+            <div>Ride All You Can</div>
+            <div>5</div>
+            <div>Php 400.00</div>
+            <div>Php 2000.00</div>
+          </div>
+          <div class="tt-row">
+            <div>Ride All You Can</div>
+            <div>5</div>
+            <div>Php 400.00</div>
+            <div>Php 2000.00</div>
+          </div>
+          <div class="tt-row">
+            <div>Ride All You Can</div>
+            <div>5</div>
+            <div>Php 400.00</div>
+            <div>Php 2000.00</div>
+          </div>
+          <div class="tt-row">
+            <div>Ride All You Can</div>
+            <div>5</div>
+            <div>Php 400.00</div>
+            <div>Php 2000.00</div>
+          </div>
+          <div style="height: 30px"></div>
+          <div class="tt-computation">
+            <div></div>
+            <div></div>
+            <div style="font-weight: bold">TOTAL</div>
+            <div>Php 8000.00</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="additional-info">
+        <div>* This document is not valid to support tax claims</div>
+        <div>
+          ** Your official receipt will be available at window #15 at the star
+          city main entrance lobby.
+        </div>
+      </div>
+    </div>
+
+    <!-- page content -->
+  </body>
+</html>

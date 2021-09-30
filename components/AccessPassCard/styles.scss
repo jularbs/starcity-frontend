@@ -2,14 +2,34 @@
 @import "../../styles/fonts.scss";
 .access-pass-card.shared {
   width: 100%;
-  padding: 20px 20px;
+  padding: 15px 15px;
   margin: 0;
   box-shadow: none;
   border-radius: 0;
-  min-height: 100vh;
 
   .send-buttons {
     display: none;
+  }
+
+  .ticket-name {
+    span {
+      display: none;
+    }
+  }
+
+  .tnc {
+    display: block;
+    width: 100%;
+    max-width: 500px;
+    li {
+      margin-bottom: 15px;
+    }
+    .header {
+      text-align: center;
+      font-weight: 700;
+      font-size: 1.25rem;
+      margin-bottom: 20px;
+    }
   }
 }
 
@@ -23,11 +43,16 @@
   padding: 20px 15px 15px 15px;
   background-color: white;
   box-shadow: 5px 5px rgba(0, 0, 0, 0.9);
+  align-items: center;
+
+  .tnc {
+    display: none;
+  }
 
   .qr-code {
-    margin: 0 30px 15px 30px;
+    max-width: 400px;
   }
-  
+
   .ticket-name {
     font-size: 18px;
     text-align: center;
@@ -43,7 +68,7 @@
   .send-buttons {
     display: flex;
     flex-direction: column;
-
+    width: 100%;
     .btn-dl {
       background-color: $orange;
       border-color: $orange;
