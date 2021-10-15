@@ -69,12 +69,20 @@ const AccessPassPage = ({ data }) => {
   }, []);
 
   return (
-    <div className="access-pass-page">
-      <h1 className="text-center pt-4 text-white ff-so">
-        Hello, {details.customerName}
-      </h1>
+    <div className={`access-pass-page ${token ? "bg" : ""}`}>
+      {token ? (
+        ""
+      ) : (
+        <h1 className="text-center pt-4 ff-so">
+          Hello, {details.customerName}
+        </h1>
+      )}
 
-      <h2 className="text-center text-uppercase text-white label ff-g mb-4">
+      <h2
+        className={`text-center text-uppercase label ff-g mb-4 ${
+          token ? "mt-5" : ""
+        }`}
+      >
         Your Star City Access Pass
       </h2>
 

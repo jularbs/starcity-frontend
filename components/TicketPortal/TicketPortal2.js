@@ -7,9 +7,10 @@ import paymaya from "paymaya-js-sdk";
 import { createCheckout } from "../../actions/checkout";
 import { getTickets } from "../../actions/ticket";
 
-const TicketPortal = ({ active, setActive }) => {
+const TicketPortal2 = ({ active, setActive }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [tickets, setTickets] = useState([]);
+  const [qty, setQty] = useState(0);
 
   const [personalDetails, setPersonalDetails] = useState({
     firstName: "",
@@ -216,10 +217,70 @@ const TicketPortal = ({ active, setActive }) => {
   const showStep1 = () => {
     return (
       <div className="tickets-container">
-        {showTickets()}
-        <div className="ticket-item">
-          <div className="total-label">Total</div>
-          <div className="total-content">Php {computeTotal()}</div>
+        <div
+          className="ticket-img"
+          style={{
+            backgroundImage: "url('placeholderticket.jpeg')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        />
+        <div className="contents">
+          <div className="price-tag">
+            <span>₱500</span>
+          </div>
+          <div className="ticket-name">Ride All You Can</div>
+          <div className="ticket-desc">
+            Lorem ipsum is placeholder text commonly used in the graphic, print,
+            and publishing industries for previewing layouts and visual mockups.
+          </div>
+          <div className="qty-control">
+            <IoRemove
+              className="icon"
+              onClick={() => {
+                if (qty > 0) setQty(qty - 1);
+              }}
+            />
+            <div className="qty">{qty}</div>
+            <IoAdd
+              className="icon"
+              onClick={() => {
+                setQty(qty + 1);
+              }}
+            />
+          </div>
+          <div className="customer-details">
+            <div className="form-group">
+              <label for="exampleInputEmail1">Customer Name</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Enter first name"
+                onChange={handleDetails("firstName")}
+                value={personalDetails.firstName}
+              />
+            </div>
+            <div className="form-group">
+              <label for="exampleInputEmail1">Contact Number</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Enter first name"
+                onChange={handleDetails("firstName")}
+                value={personalDetails.firstName}
+              />
+            </div>
+            <div className="form-group">
+              <label for="exampleInputEmail1">Email Address</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Enter first name"
+                onChange={handleDetails("firstName")}
+                value={personalDetails.firstName}
+              />
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -259,7 +320,7 @@ const TicketPortal = ({ active, setActive }) => {
               value={personalDetails.contactNumber}
             />
           </div>
-          {/* <div className="form-group">
+          <div className="form-group">
             <label for="exampleInputEmail1">Email Address</label>
             <input
               type="email"
@@ -268,13 +329,13 @@ const TicketPortal = ({ active, setActive }) => {
               onChange={handleDetails("email")}
               value={personalDetails.email}
             />
-          </div> */}
+          </div>
           <div className="form-group">
-            <label for="exampleInputEmail1">Email Address</label>
+            <label for="exampleInputEmail1">Confirm Email Address</label>
             <input
               type="email"
               className="form-control"
-              placeholder="Email address"
+              placeholder="Confirm email address"
               onChange={handleDetails("confirmEmail")}
               value={personalDetails.confirmEmail}
             />
@@ -300,15 +361,12 @@ const TicketPortal = ({ active, setActive }) => {
 
   return (
     <Modal active={active} setActive={setActive}>
-      <div className="ticket-portal-container">
-        <h2>Buy Tickets</h2>
-        {showTicker()}
+      <div className="ticket-portal-container2">
         {handleSteps()}
-
         {showButtons()}
       </div>
     </Modal>
   );
 };
 
-export default TicketPortal;
+export default TicketPortal2;

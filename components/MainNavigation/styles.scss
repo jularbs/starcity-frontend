@@ -14,16 +14,16 @@
   }
   .main-navbar {
     font-family: $SigmarOne;
-    // position: absolute;
     background-color: rgba(0, 0, 0, 0.125);
-    top: 0;
+    // top: 0;
+
     .logo-placement {
       position: relative;
       .logo-container {
         position: absolute;
         height: calc(100% + 30px);
         left: 50px;
-        // top: 25px;
+        top: 25px;
       }
     }
     .links-placement {

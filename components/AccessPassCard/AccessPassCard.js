@@ -1,6 +1,11 @@
 import "./styles.scss";
 
+import { useRouter } from "next/router";
+import { downloadAccessPass } from "../../actions/accessPass";
 const AccessPassCard = ({ data, index, classNames }) => {
+  const router = useRouter();
+  const { s, r } = router.query;
+
   return (
     <>
       <div className={`access-pass-card ${classNames}`}>
@@ -14,7 +19,13 @@ const AccessPassCard = ({ data, index, classNames }) => {
         <img className="qr-code" src={data.QRcode.location}></img>
 
         <div className="send-buttons">
-          <button className="btn btn-block w-100 mb-2 btn-dl">Download</button>
+          <a
+            href={`${process.env.DOMAIN}/accesspass?s=${s}&r=${r}&t=${data.accessToken}`}
+            target="_blank"
+            className="btn btn-block w-100 mb-2 btn-dl"
+          >
+            Download
+          </a>
 
           <button className="btn btn-block mb-2 btn-viber">
             Send via Viber

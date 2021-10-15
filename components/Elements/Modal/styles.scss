@@ -4,7 +4,8 @@
   height: 100vh;
   display: none;
   position: fixed;
-  background-color: rgba(0, 0, 0, 0.7);
+  top: 0;
+  background-color: rgba(0, 0, 0, 0.5);
 
   &.active {
     display: flex;
@@ -12,17 +13,17 @@
 }
 
 .modal-view {
-  z-index: 2001;
+  z-index: 9999;
   position: fixed;
   top: 30%;
   left: 50%;
   transform: translate(-50%, -40%);
-  width: 1200px;
   max-width: 100%;
   background-color: white;
   color: black;
-  padding: 15px;
-  border-radius: .225rem;
+  // padding: 15px;
+  overflow: hidden;
+  border-radius: 0.225rem;
 
   .control {
     position: absolute;
