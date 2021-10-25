@@ -8,6 +8,9 @@ module.exports = withCss(
       PAYMAYA_PK: process.env.PAYMAYA_PUBLIC_KEY,
       SPC_API: process.env.SPC_API,
       DOMAIN: process.env.DOMAIN,
+      PAYPAL_ACCOUNT: process.env.PAYPAL_ACCOUNT,
+      PAYPAL_CLIENT_ID: process.env.PAYPAL_CLIENT_ID,
+      PAYPAL_SECRET_ID: process.env.PAYPAL_SECRET_ID,
     },
     webpack5: false,
     headers: () => {

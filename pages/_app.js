@@ -4,6 +4,7 @@ import "../styles/master.scss";
 
 import Layout1 from "../layouts/Layout1";
 import Head from "next/head";
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 function MyApp({ Component, pageProps }) {
   return (
     // <Layout1>
@@ -15,7 +16,11 @@ function MyApp({ Component, pageProps }) {
           rel="preload"
         ></script>
       </Head>
-      <Component {...pageProps} />
+      <PayPalScriptProvider
+        options={{ "client-id": process.env.PAYPAL_CLIENT_ID }}
+      >
+        <Component {...pageProps} />
+      </PayPalScriptProvider>
     </>
     // </Layout1>
   );

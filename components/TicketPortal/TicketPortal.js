@@ -6,11 +6,13 @@ import { IoAdd, IoRemove } from "react-icons/io5";
 import paymaya from "paymaya-js-sdk";
 import { createCheckout } from "../../actions/checkout";
 import { getTickets } from "../../actions/ticket";
+import { getPaymentOptions } from "../../actions/paymentOptions";
 
+import { PayPalButtons } from "@paypal/react-paypal-js";
 const TicketPortal = ({ active, setActive }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [tickets, setTickets] = useState([]);
-
+  const [paymentOptions, setPaymentOptions] = useState([]);
   const [personalDetails, setPersonalDetails] = useState({
     firstName: "",
     lastName: "",
@@ -19,9 +21,73 @@ const TicketPortal = ({ active, setActive }) => {
     contactNumber: "",
   });
 
+  //PAYPAL STATES
+  const [succeeded, setSucceeded] = useState(false);
+  const [paypalErrorMessage, setPaypalErrorMessage] = useState("");
+  const [orderID, setOrderID] = useState(false);
+  const [billingDetails, setBillingDetails] = useState("");
+
+  useEffect(() => {
+    paymaya.init(process.env.PAYMAYA_PK, true);
+    fetchTickets();
+    fetchPaymentOptions();
+  }, []);
+
+  //PAYPAL FUNCTION
+  const createOrder = async (data, actions) => {
+    const cartItems = tickets
+      .filter((ticket) => ticket.qty > 0)
+      .map((item) => {
+        return { _id: item._id, qty: item.qty };
+      });
+
+    const buyerDetails = {
+      customerName: `${personalDetails.firstName} ${personalDetails.lastName}`,
+      email: personalDetails.confirmEmail,
+      contactNumber: personalDetails.contactNumber,
+    };
+
+    const checkout = await createCheckout({
+      cartItems: cartItems,
+      ...buyerDetails,
+    });
+    console.log(checkout);
+
+    return actions.order
+      .create({
+        purchase_units: [
+          {
+            amount: {
+              value: checkout.orderTotal,
+            },
+          },
+        ],
+        // remove the applicaiton_context object if you need your users to add a shipping address
+        application_context: {
+          shipping_preference: "NO_SHIPPING",
+        },
+      })
+      .then((orderID) => {
+        setOrderID(orderID);
+        return orderID;
+      });
+  };
+
+  const onApprove = (data, actions) => {
+    return actions.order
+      .capture()
+      .then(function (details) {
+        console.log("STATUS: ", details.status);
+        console.log("ID: ", details.id);
+        const { payer } = details;
+        setBillingDetails(payer);
+        setSucceeded(true);
+      })
+      .catch((err) => setPaypalErrorMessage("Something went wrong."));
+  };
+
   const fetchTickets = () => {
     getTickets().then((data) => {
-      console.log(data);
       const availableTickets = data.map((item) => {
         return {
           _id: item._id,
@@ -36,18 +102,16 @@ const TicketPortal = ({ active, setActive }) => {
     });
   };
 
-  useEffect(() => {
-    fetchTickets();
-  }, []);
+  const fetchPaymentOptions = () => {
+    getPaymentOptions().then((data) => {
+      setPaymentOptions(data);
+    });
+  };
 
   const handleDetails = (index) => (e) => {
     const { value } = e.target;
     setPersonalDetails({ ...personalDetails, [index]: value });
   };
-
-  useEffect(() => {
-    paymaya.init(process.env.PAYMAYA_PK, true);
-  }, []);
 
   const handleCheckout = () => {
     const cartItems = tickets
@@ -182,6 +246,20 @@ const TicketPortal = ({ active, setActive }) => {
     if (currentStep > 0) setCurrentStep(currentStep - 1);
   };
 
+  const showCheckoutButton = () => {
+    return paymentOptions.map((po, i) => {
+      return (
+        <button
+          className={`btn btn-block btn-warning mb-2 next`}
+          onClick={handleCheckout}
+          key={i}
+        >
+          Pay with {po.name}
+        </button>
+      );
+    });
+  };
+
   const showButtons = () => {
     return (
       <div className="buttons-container">
@@ -201,14 +279,6 @@ const TicketPortal = ({ active, setActive }) => {
         >
           NEXT
         </button>
-        {currentStep == 3 && (
-          <button
-            className={`btn btn-block btn-warning next`}
-            onClick={handleCheckout}
-          >
-            CHECKOUT
-          </button>
-        )}
       </div>
     );
   };
@@ -287,7 +357,18 @@ const TicketPortal = ({ active, setActive }) => {
   const showStep3 = () => {
     return (
       <div className="summary-container" id="credit-card-form">
-        <div id="iframe-container" />
+        <PayPalButtons
+          style={{
+            color: "blue",
+            // shape: "pill",
+            label: "pay",
+            tagline: false,
+            layout: "horizontal",
+          }}
+          createOrder={createOrder}
+          onApprove={onApprove}
+        />
+        {showCheckoutButton()}
       </div>
     );
   };
