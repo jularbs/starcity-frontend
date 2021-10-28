@@ -17,7 +17,7 @@ function MyApp({ Component, pageProps }) {
         ></script>
       </Head>
       <PayPalScriptProvider
-        options={{ "client-id": process.env.PAYPAL_CLIENT_ID }}
+        options={{ "client-id": process.env.PAYPAL_CLIENT_ID, currency: "PHP" }}
       >
         <Component {...pageProps} />
       </PayPalScriptProvider>

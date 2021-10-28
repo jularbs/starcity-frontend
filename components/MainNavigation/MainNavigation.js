@@ -1,5 +1,5 @@
 import "./styles.scss";
-import TicketPortal from "../TicketPortal/TicketPortal";
+import TicketPortal from "../TicketPortal/TicketPortal2";
 import { useState } from "react";
 
 const MainNavigation = () => {

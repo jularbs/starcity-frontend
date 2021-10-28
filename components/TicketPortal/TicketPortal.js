@@ -7,9 +7,12 @@ import paymaya from "paymaya-js-sdk";
 import { createCheckout } from "../../actions/checkout";
 import { getTickets } from "../../actions/ticket";
 import { getPaymentOptions } from "../../actions/paymentOptions";
-
+import { processPaypalPayment } from "../../actions/sale";
 import { PayPalButtons } from "@paypal/react-paypal-js";
+import { useRouter } from "next/router";
+
 const TicketPortal = ({ active, setActive }) => {
+  const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   const [tickets, setTickets] = useState([]);
   const [paymentOptions, setPaymentOptions] = useState([]);
@@ -21,12 +24,6 @@ const TicketPortal = ({ active, setActive }) => {
     contactNumber: "",
   });
 
-  //PAYPAL STATES
-  const [succeeded, setSucceeded] = useState(false);
-  const [paypalErrorMessage, setPaypalErrorMessage] = useState("");
-  const [orderID, setOrderID] = useState(false);
-  const [billingDetails, setBillingDetails] = useState("");
-
   useEffect(() => {
     paymaya.init(process.env.PAYMAYA_PK, true);
     fetchTickets();
@@ -35,6 +32,25 @@ const TicketPortal = ({ active, setActive }) => {
 
   //PAYPAL FUNCTION
   const createOrder = async (data, actions) => {
+    const orderTotal = tickets
+      .filter((ticket) => ticket.qty > 0)
+      .reduce((sum, item) => {
+        return sum + item.qty * item.price;
+      }, 0);
+
+    const order = await actions.order.create({
+      purchase_units: [
+        {
+          amount: {
+            value: orderTotal,
+          },
+        },
+      ],
+      application_context: {
+        shipping_preference: "NO_SHIPPING",
+      },
+    });
+
     const cartItems = tickets
       .filter((ticket) => ticket.qty > 0)
       .map((item) => {
@@ -47,41 +63,38 @@ const TicketPortal = ({ active, setActive }) => {
       contactNumber: personalDetails.contactNumber,
     };
 
-    const checkout = await createCheckout({
+    await createCheckout({
       cartItems: cartItems,
       ...buyerDetails,
+      paymentDetails: {
+        slug: "paypal",
+        orderID: order,
+        status: "ORDER_CREATED",
+      },
     });
-    console.log(checkout);
 
-    return actions.order
-      .create({
-        purchase_units: [
-          {
-            amount: {
-              value: checkout.orderTotal,
-            },
-          },
-        ],
-        // remove the applicaiton_context object if you need your users to add a shipping address
-        application_context: {
-          shipping_preference: "NO_SHIPPING",
-        },
-      })
-      .then((orderID) => {
-        setOrderID(orderID);
-        return orderID;
-      });
+    return order;
   };
 
   const onApprove = (data, actions) => {
     return actions.order
       .capture()
-      .then(function (details) {
-        console.log("STATUS: ", details.status);
-        console.log("ID: ", details.id);
-        const { payer } = details;
-        setBillingDetails(payer);
-        setSucceeded(true);
+      .then(async (details) => {
+        return await processPaypalPayment({
+          status: details.status,
+          orderId: details.id,
+        });
+      })
+      .then((data) => {
+        setActive(false);
+        router.push(
+          {
+            pathname: "/",
+            query: { refid: data.refid, payment: "true" },
+          },
+          undefined,
+          { shallow: true }
+        );
       })
       .catch((err) => setPaypalErrorMessage("Something went wrong."));
   };
@@ -159,9 +172,7 @@ const TicketPortal = ({ active, setActive }) => {
         requestReferenceNumber: data.refId,
         metadata: {},
       };
-      paymaya.createCheckout(cart).then((data) => {
-        console.log(data);
-      });
+      paymaya.createCheckout(cart);
     });
   };
 

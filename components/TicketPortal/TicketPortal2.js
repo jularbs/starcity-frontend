@@ -1,4 +1,6 @@
-import "./styles.scss";
+//TODOS: show error, proper layouting,
+
+import "./styles-exp.scss";
 import Modal from "../Elements/Modal/Modal";
 import { useState, useEffect } from "react";
 import { IoAdd, IoRemove } from "react-icons/io5";
@@ -6,12 +8,16 @@ import { IoAdd, IoRemove } from "react-icons/io5";
 import paymaya from "paymaya-js-sdk";
 import { createCheckout } from "../../actions/checkout";
 import { getTickets } from "../../actions/ticket";
+import { getPaymentOptions } from "../../actions/paymentOptions";
+import { processPaypalPayment } from "../../actions/sale";
+import { PayPalButtons } from "@paypal/react-paypal-js";
+import { useRouter } from "next/router";
 
-const TicketPortal2 = ({ active, setActive }) => {
+const TicketPortal = ({ active, setActive }) => {
+  const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   const [tickets, setTickets] = useState([]);
-  const [qty, setQty] = useState(0);
-
+  const [paymentOptions, setPaymentOptions] = useState([]);
   const [personalDetails, setPersonalDetails] = useState({
     firstName: "",
     lastName: "",
@@ -20,9 +26,83 @@ const TicketPortal2 = ({ active, setActive }) => {
     contactNumber: "",
   });
 
+  useEffect(() => {
+    paymaya.init(process.env.PAYMAYA_PK, true);
+    fetchTickets();
+    fetchPaymentOptions();
+  }, []);
+
+  //PAYPAL FUNCTION
+  const createOrder = async (data, actions) => {
+    const orderTotal = tickets
+      .filter((ticket) => ticket.qty > 0)
+      .reduce((sum, item) => {
+        return sum + item.qty * item.price;
+      }, 0);
+
+    const order = await actions.order.create({
+      purchase_units: [
+        {
+          amount: {
+            value: orderTotal,
+          },
+        },
+      ],
+      application_context: {
+        shipping_preference: "NO_SHIPPING",
+      },
+    });
+
+    const cartItems = tickets
+      .filter((ticket) => ticket.qty > 0)
+      .map((item) => {
+        return { _id: item._id, qty: item.qty };
+      });
+
+    const buyerDetails = {
+      customerName: `${personalDetails.firstName} ${personalDetails.lastName}`,
+      email: personalDetails.confirmEmail,
+      contactNumber: personalDetails.contactNumber,
+    };
+
+    await createCheckout({
+      cartItems: cartItems,
+      ...buyerDetails,
+      paymentDetails: {
+        slug: "paypal",
+        orderID: order,
+        status: "ORDER_CREATED",
+      },
+    });
+
+    return order;
+  };
+
+  const onApprove = (data, actions) => {
+    return actions.order
+      .capture()
+      .then(async (details) => {
+        return await processPaypalPayment({
+          status: details.status,
+          orderId: details.id,
+        });
+      })
+      .then((data) => {
+        setActive(false);
+        router.push(
+          {
+            pathname: "/",
+            query: { refid: data.refid, payment: "true" },
+          },
+          undefined,
+          { shallow: true }
+        );
+      })
+      .catch((err) => setPaypalErrorMessage("Something went wrong."));
+  };
+
   const fetchTickets = () => {
     getTickets().then((data) => {
-      console.log(data);
       const availableTickets = data.map((item) => {
         return {
           _id: item._id,
@@ -37,18 +117,16 @@ const TicketPortal2 = ({ active, setActive }) => {
     });
   };
 
-  useEffect(() => {
-    fetchTickets();
-  }, []);
+  const fetchPaymentOptions = () => {
+    getPaymentOptions().then((data) => {
+      setPaymentOptions(data);
+    });
+  };
 
   const handleDetails = (index) => (e) => {
     const { value } = e.target;
     setPersonalDetails({ ...personalDetails, [index]: value });
   };
-
-  useEffect(() => {
-    paymaya.init(process.env.PAYMAYA_PK, true);
-  }, []);
 
   const handleCheckout = () => {
     const cartItems = tickets
@@ -96,9 +174,7 @@ const TicketPortal2 = ({ active, setActive }) => {
         requestReferenceNumber: data.refId,
         metadata: {},
       };
-      paymaya.createCheckout(cart).then((data) => {
-        console.log(data);
-      });
+      paymaya.createCheckout(cart);
     });
   };
 
@@ -140,39 +216,22 @@ const TicketPortal2 = ({ active, setActive }) => {
     return tickets.map((ticket, index) => {
       return (
         <div className="ticket-item" key={index}>
-          <div className="name content">{ticket.name}</div>
-          <div className="desc content">{ticket.description}</div>
-          <div className="price content">Php {ticket.price}</div>
-          <div className="qty content">
-            <IoRemove
-              className="icon"
-              onClick={() => handleRemoveItem(ticket)}
-            />
-            <div>{ticket.qty}</div>
-            <IoAdd className="icon" onClick={() => handleAddItem(ticket)} />
+          <div className="name">{ticket.name}</div>
+          <div className="desc">{ticket.description}</div>
+          <div className="price-qty">
+            <div className="qty">
+              <IoRemove
+                className="icon"
+                onClick={() => handleRemoveItem(ticket)}
+              />
+              <div>{ticket.qty}</div>
+              <IoAdd className="icon" onClick={() => handleAddItem(ticket)} />
+            </div>
+            <div className="price">Php {ticket.price}</div>
           </div>
         </div>
       );
     });
-  };
-
-  const showTicker = () => {
-    return (
-      <div className="ticker-container">
-        <div className="ticker-item">
-          <div className="label">Step 1</div>
-          <div className="description">Ticket Details</div>
-        </div>
-        <div className="ticker-item">
-          <div className="label">Step 2</div>
-          <div className="description">Personal Details</div>
-        </div>
-        <div className="ticker-item">
-          <div className="label">Step 3</div>
-          <div className="description">Order Summary</div>
-        </div>
-      </div>
-    );
   };
 
   const handleStepUp = () => {
@@ -181,6 +240,22 @@ const TicketPortal2 = ({ active, setActive }) => {
 
   const handleStepDown = () => {
     if (currentStep > 0) setCurrentStep(currentStep - 1);
+  };
+
+  const showCheckoutButton = () => {
+    return paymentOptions.map((po, i) => {
+      return (
+        <div>
+          <button
+            className={`btn btn-block w-100 btn-warning mb-2 next checkout-button`}
+            onClick={handleCheckout}
+            key={i}
+          >
+            Pay with {po.name}
+          </button>
+        </div>
+      );
+    });
   };
 
   const showButtons = () => {
@@ -202,14 +277,6 @@ const TicketPortal2 = ({ active, setActive }) => {
         >
           NEXT
         </button>
-        {currentStep == 3 && (
-          <button
-            className={`btn btn-block btn-warning next`}
-            onClick={handleCheckout}
-          >
-            CHECKOUT
-          </button>
-        )}
       </div>
     );
   };
@@ -217,70 +284,11 @@ const TicketPortal2 = ({ active, setActive }) => {
   const showStep1 = () => {
     return (
       <div className="tickets-container">
-        <div
-          className="ticket-img"
-          style={{
-            backgroundImage: "url('placeholderticket.jpeg')",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        />
-        <div className="contents">
-          <div className="price-tag">
-            <span>₱500</span>
-          </div>
-          <div className="ticket-name">Ride All You Can</div>
-          <div className="ticket-desc">
-            Lorem ipsum is placeholder text commonly used in the graphic, print,
-            and publishing industries for previewing layouts and visual mockups.
-          </div>
-          <div className="qty-control">
-            <IoRemove
-              className="icon"
-              onClick={() => {
-                if (qty > 0) setQty(qty - 1);
-              }}
-            />
-            <div className="qty">{qty}</div>
-            <IoAdd
-              className="icon"
-              onClick={() => {
-                setQty(qty + 1);
-              }}
-            />
-          </div>
-          <div className="customer-details">
-            <div className="form-group">
-              <label for="exampleInputEmail1">Customer Name</label>
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Enter first name"
-                onChange={handleDetails("firstName")}
-                value={personalDetails.firstName}
-              />
-            </div>
-            <div className="form-group">
-              <label for="exampleInputEmail1">Contact Number</label>
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Enter first name"
-                onChange={handleDetails("firstName")}
-                value={personalDetails.firstName}
-              />
-            </div>
-            <div className="form-group">
-              <label for="exampleInputEmail1">Email Address</label>
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Enter first name"
-                onChange={handleDetails("firstName")}
-                value={personalDetails.firstName}
-              />
-            </div>
-          </div>
+        {showTickets()}
+        <div className="ticket-item">
+          <span className="total">
+            <strong>Total: </strong> Php {computeTotal()}
+          </span>
         </div>
       </div>
     );
@@ -320,7 +328,7 @@ const TicketPortal2 = ({ active, setActive }) => {
               value={personalDetails.contactNumber}
             />
           </div>
-          <div className="form-group">
+          {/* <div className="form-group">
             <label for="exampleInputEmail1">Email Address</label>
             <input
               type="email"
@@ -329,13 +337,13 @@ const TicketPortal2 = ({ active, setActive }) => {
               onChange={handleDetails("email")}
               value={personalDetails.email}
             />
-          </div>
+          </div> */}
           <div className="form-group">
-            <label for="exampleInputEmail1">Confirm Email Address</label>
+            <label for="exampleInputEmail1">Email Address</label>
             <input
               type="email"
               className="form-control"
-              placeholder="Confirm email address"
+              placeholder="Email address"
               onChange={handleDetails("confirmEmail")}
               value={personalDetails.confirmEmail}
             />
@@ -348,7 +356,17 @@ const TicketPortal2 = ({ active, setActive }) => {
   const showStep3 = () => {
     return (
       <div className="summary-container" id="credit-card-form">
-        <div id="iframe-container" />
+        <PayPalButtons
+          style={{
+            color: "gold",
+            label: "pay",
+            tagline: false,
+            layout: "horizontal",
+          }}
+          createOrder={createOrder}
+          onApprove={onApprove}
+        />
+        {showCheckoutButton()}
       </div>
     );
   };
@@ -361,12 +379,14 @@ const TicketPortal2 = ({ active, setActive }) => {
 
   return (
     <Modal active={active} setActive={setActive}>
-      <div className="ticket-portal-container2">
+      <div className="ticket-portal-container">
+        <h2>Buy Tickets</h2>
         {handleSteps()}
+
         {showButtons()}
       </div>
     </Modal>
   );
 };
 
-export default TicketPortal2;
+export default TicketPortal;

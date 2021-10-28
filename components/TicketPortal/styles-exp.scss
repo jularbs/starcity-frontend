@@ -1,0 +1,121 @@
+@import "../../styles/colors.scss";
+
+.ticket-portal-container {
+  width: 100%;
+  max-width: 420px;
+  padding: 15px;
+  h2 {
+    text-align: center;
+    margin-bottom: 10px;
+    margin-top: 20px;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  .ticker-container {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+
+    .ticker-item {
+      text-align: center;
+      padding: 5px 15px;
+      //   background-color: orange;
+      .label {
+        font-weight: 600;
+        line-height: 14px;
+        font-size: 14px;
+      }
+
+      .description {
+        font-weight: 300;
+        font-size: 12px;
+        color: rgba(0, 0, 0, 0.5);
+      }
+    }
+  }
+
+  .buttons-container {
+    display: grid;
+    grid-template-columns: 2fr 2fr 2fr;
+    margin-top: 20px;
+
+    .hide-stepper {
+      display: none;
+    }
+    .btn {
+      font-weight: 700;
+    }
+    .next {
+      grid-column-start: 3;
+    }
+  }
+
+  .tickets-container {
+    .ticket-item {
+      padding: 20px 10px;
+      display: flex;
+      flex-direction: column;
+
+      .price-qty {
+        display: flex;
+        justify-content: space-between;
+
+        .price {
+          font-weight: 600;
+        }
+
+        .qty {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          div {
+            padding: 0px 30px;
+          }
+        }
+      }
+
+      .name {
+        font-weight: 900;
+        font-size: 1.25rem;
+      }
+      .desc {
+        color: gray;
+        font-weight: 300;
+        font-size: 0.8rem;
+
+        min-height: 50px;
+      }
+
+      .total {
+        align-self: flex-end;
+      }
+    }
+  }
+
+  .p-details-container {
+    .form-container {
+      grid-column-start: 2;
+      margin-bottom: 30px;
+
+      .form-group {
+        margin-bottom: 5px;
+
+        label {
+          font-weight: 700;
+          font-size: 0.8rem;
+          padding-bottom: 5px;
+        }
+      }
+    }
+  }
+
+  .summary-container {
+    display: flex;
+    flex-direction: column;
+    .checkout-button {
+      height: 45px !important;
+    }
+  }
+}
